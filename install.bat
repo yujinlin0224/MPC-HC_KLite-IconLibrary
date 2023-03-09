@@ -1,31 +1,28 @@
 @echo off
 
-if exist "%ProgramFiles%\MPC-HC\mpc-hc.exe" (
-  copy /y "%~dp0\32bit\mpciconlib.dll" "%ProgramFiles%\MPC-HC"
-  start "" /wait "%ProgramFiles%\MPC-HC\mpc-hc.exe" /iconsassoc
-)
+setlocal EnableDelayedExpansion
 
-if exist "%ProgramFiles%\MPC-HC\mpc-hc64.exe" (
-  copy /y "%~dp0\64bit\mpciconlib.dll" "%ProgramFiles%\MPC-HC"
-  start "" /wait "%ProgramFiles%\MPC-HC\mpc-hc64.exe" /iconsassoc
-)
+set Filename=mpciconlib.dll
+set FilePath[32]=%~dp0\32bit\%Filename%
+set FilePath[64]=%~dp0\64bit\%Filename%
 
-if exist "%ProgramFiles(x86)%\MPC-HC\mpc-hc.exe" (
-  copy /y "%~dp0\32bit\mpciconlib.dll" "%ProgramFiles(x86)%\MPC-HC"
-  start "" /wait "%ProgramFiles(x86)%\MPC-HC\mpc-hc.exe" /iconsassoc
-)
+set ProgramName[32]=mpc-hc.exe
+set ProgramName[64]=mpc-hc64.exe
 
-if exist "%ProgramFiles%\K-Lite Codec Pack\MPC-HC\mpc-hc.exe" (
-  copy /y "%~dp0\32bit\mpciconlib.dll" "%ProgramFiles%\K-Lite Codec Pack\MPC-HC"
-  start "" /wait "%ProgramFiles%\K-Lite Codec Pack\MPC-HC\mpc-hc.exe" /iconsassoc
-)
+set ProgramDirPaths=5
+set ProgramDirPaths[1]=%ProgramFiles%\MPC-HC
+set ProgramDirPaths[2]=%ProgramFiles(x86)%\MPC-HC
+set ProgramDirPaths[3]=%ProgramFiles%\K-Lite Codec Pack\MPC-HC
+set ProgramDirPaths[4]=%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC
+set ProgramDirPaths[5]=%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC64
 
-if exist "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC\mpc-hc.exe" (
-  copy /y "%~dp0\32bit\mpciconlib.dll" "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC"
-  start "" /wait "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC\mpc-hc.exe" /iconsassoc
-)
-
-if exist "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe" (
-  copy /y "%~dp0\64bit\mpciconlib.dll" "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC64"
-  start "" /wait "%ProgramFiles(x86)%\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe" /iconsassoc
+for /l %%i in (1,1,%ProgramDirPaths%) do (
+  for %%a in (32,64) do (
+    echo "!ProgramDirPaths[%%i]!\!ProgramName[%%a]!"
+    if exist "!ProgramDirPaths[%%i]!\!ProgramName[%%a]!" (
+      copy /y "!ProgramDirPaths[%%i]!\%Filename%" "!ProgramDirPaths[%%i]!\%Filename%.bak"
+      copy /y "!FilePath[%%a]!" "!ProgramDirPaths[%%i]!"
+      start "" /wait "!ProgramDirPaths[%%i]!\!ProgramName[%%a]!" /iconsassoc
+    )
+  )
 )
